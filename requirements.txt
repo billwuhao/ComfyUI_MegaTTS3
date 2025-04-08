@@ -6,3 +6,4 @@ pyloudnorm
 x-transformers
 torchdiffeq
 openai-whisper>=20240930
+transformers==4.48.3
