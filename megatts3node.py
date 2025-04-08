@@ -228,7 +228,9 @@ class MegaTTS3DiTInfer():
         }
 
     def forward(self, resource_context, input_text, language_type, time_step, p_w, t_w, dur_disturb=0.1, dur_alpha=1.0, **kwargs):
+        print("▶️ forward函数开始执行...")
         device = self.device
+        print(f"▶️ 使用设备: {device}")
 
         ph_ref = resource_context['ph_ref'].to(device)
         tone_ref = resource_context['tone_ref'].to(device)
@@ -236,35 +238,61 @@ class MegaTTS3DiTInfer():
         vae_latent = resource_context['vae_latent'].to(device)
         ctx_dur_tokens = resource_context['ctx_dur_tokens'].to(device)
         incremental_state_dur_prompt = resource_context['incremental_state_dur_prompt']
+        print("▶️ 资源已加载到设备...")
 
+        # 限制输入文本长度
+        if len(input_text) > 100:
+            print(f"⚠️ 输入文本过长({len(input_text)}字符)，自动截断到100字符")
+            input_text = input_text[:100]
+        
         with torch.inference_mode():
-            ''' Generating '''
+            print("▶️ 开始生成过程...")
             wav_pred_ = []
             # language_type = classify_language(input_text)
             if language_type == 'en':
                 # input_text = self.en_normalizer.normalize(input_text)
-                text_segs = chunk_text_english(input_text, max_chars=130)
+                text_segs = chunk_text_english(input_text, max_chars=60)  # 减小分段长度
+                print(f"▶️ 英文文本分段完成，共{len(text_segs)}段")
             else:
                 # input_text = self.zh_normalizer.normalize(input_text)
-                text_segs = chunk_text_chinese(input_text, limit=60)
+                text_segs = chunk_text_chinese(input_text, limit=30)  # 减小分段长度
+                print(f"▶️ 中文文本分段完成，共{len(text_segs)}段")
+
+            # 限制段落数量
+            if len(text_segs) > 2:
+                print(f"⚠️ 文本段落数量过多({len(text_segs)})，限制为前2段")
+                text_segs = text_segs[:2]
 
             for seg_i, text in enumerate(text_segs):
+                print(f"▶️ 处理第{seg_i+1}/{len(text_segs)}段文本: '{text}'")
                 ''' G2P '''
+                print(f"  ▶️ 执行G2P(grapheme to phoneme)...")
                 ph_pred, tone_pred = g2p(self, text)
+                print(f"  ✅ G2P完成")
 
                 ''' Duration Prediction '''
+                print(f"  ▶️ 执行音素时长预测...")
                 mel2ph_pred = dur_pred(self, ctx_dur_tokens, incremental_state_dur_prompt, ph_pred, tone_pred, seg_i, dur_disturb, dur_alpha, is_first=seg_i==0, is_final=seg_i==len(text_segs)-1)
+                print(f"  ✅ 音素时长预测完成")
                 
+                print(f"  ▶️ 准备DiT输入...")
                 inputs = prepare_inputs_for_dit(self, mel2ph_ref, mel2ph_pred, ph_ref, tone_ref, ph_pred, tone_pred, vae_latent)
+                print(f"  ✅ DiT输入准备完成")
+                
                 # Speech dit inference
+                print(f"  ▶️ 执行DiT推理，timesteps={time_step}...")
                 with torch.cuda.amp.autocast(dtype=self.precision, enabled=True):
                     x = self.dit.inference(inputs, timesteps=time_step, seq_cfg_w=[p_w, t_w]).float()
+                print(f"  ✅ DiT推理完成")
                 
                 # WavVAE decode
+                print(f"  ▶️ 执行WavVAE解码...")
                 x[:, :vae_latent.size(1)] = vae_latent
                 wav_pred = self.wavvae.decode(x)[0,0].to(torch.float32)
+                print(f"  ✅ WavVAE解码完成")
                 
                 ''' Post-processing '''
+                print(f"  ▶️ 执行后处理...")
                 # Trim prompt wav
                 wav_pred = wav_pred[vae_latent.size(1)*self.vae_stride*self.hop_size:].cpu().numpy()
                 # Norm generated wav to prompt wav's level
@@ -273,12 +301,16 @@ class MegaTTS3DiTInfer():
                 wav_pred = pyln.normalize.loudness(wav_pred, loudness_pred, self.loudness_prompt)
                 if np.abs(wav_pred).max() >= 1:
                     wav_pred = wav_pred / np.abs(wav_pred).max() * 0.95
+                print(f"  ✅ 后处理完成")
 
                 # Apply hamming window
                 wav_pred_.append(wav_pred)
+                print(f"✅ 第{seg_i+1}段处理完成")
 
+            print("▶️ 合并音频片段...")
             wav_pred = combine_audio_segments(wav_pred_, sr=self.sr).astype(np.float32)
             waveform = torch.tensor(wav_pred).unsqueeze(0).unsqueeze(0)
+            print(f"✅ 音频生成完成! 长度:{len(wav_pred)/self.sr:.2f}秒")
 
             return {"waveform": waveform, "sample_rate": self.sr}
 
@@ -318,10 +350,24 @@ class MegaTTS3Run:
         latent_file = sperker_path.replace('.wav', '.npy')
         print(f"latent_file: {latent_file}")
         if os.path.exists(latent_file):
+            print("开始预处理音频...")
             resource_context = infer_ins.preprocess(file_content, latent_file=latent_file)
+            print("预处理完成，开始生成音频...")
         else:
             raise Exception("latent_file not found")
-        audio_data = infer_ins.forward(resource_context, text, language_type=text_language, time_step=time_step, p_w=p_w, t_w=t_w)
+        
+        # 降低生成步数以加快处理
+        if time_step > 16:
+            print(f"[优化] 将time_step从{time_step}降低到16以加快处理")
+            time_step = 16
+            
+        print(f"开始生成音频... 参数: language={text_language}, time_step={time_step}, p_w={p_w}, t_w={t_w}")
+        try:
+            audio_data = infer_ins.forward(resource_context, text, language_type=text_language, time_step=time_step, p_w=p_w, t_w=t_w)
+            print("音频生成完成!")
+        except Exception as e:
+            print(f"生成音频时发生错误: {e}")
+            raise e
 
         if unload_model:
             import gc
