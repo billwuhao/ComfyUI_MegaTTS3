@@ -15,11 +15,26 @@
 import io
 import os
 import subprocess
+import sys
 
 import numpy as np
 from scipy.io import wavfile
 import pyloudnorm as pyln
 from pydub import AudioSegment
+
+# 设置FFmpeg路径
+comfyui_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../../../..'))
+ffmpeg_path = os.path.join(comfyui_path, 'ffmpeg.exe')
+ffprobe_path = os.path.join(comfyui_path, 'ffprobe.exe')
+
+# 检查文件是否存在
+if os.path.exists(ffmpeg_path) and os.path.exists(ffprobe_path):
+    # 设置pydub使用的FFmpeg路径
+    AudioSegment.converter = ffmpeg_path
+    AudioSegment.ffmpeg = ffmpeg_path
+    AudioSegment.ffprobe = ffprobe_path
+else:
+    print(f"警告: FFmpeg文件未找到! 尝试在以下路径查找:\n{ffmpeg_path}\n{ffprobe_path}")
 
 
 def to_wav_bytes(wav, sr, norm=False):
@@ -71,12 +86,12 @@ def convert_to_wav(wav_path):
 
 
 def convert_to_wav_bytes(audio_binary):
-    # Load the audio binary using pydub and convert it to WAV
-    audio = AudioSegment.from_file(io.BytesIO(audio_binary))
-    wav_bytes = io.BytesIO()
-    audio.export(wav_bytes, format="wav")
-    wav_bytes.seek(0)
-    return wav_bytes
+    # 直接返回原始字节流
+    # 由于在这个模块中无法直接访问librosa，我们采用简单的方法
+    byte_stream = io.BytesIO(audio_binary)
+    # 重置光标位置到文件开头
+    byte_stream.seek(0)
+    return byte_stream
 
 
 ''' Smoothly combine audio segments using crossfade transitions." '''
