@@ -239,11 +239,6 @@ class MegaTTS3DiTInfer():
         ctx_dur_tokens = resource_context['ctx_dur_tokens'].to(device)
         incremental_state_dur_prompt = resource_context['incremental_state_dur_prompt']
         print("▶️ 资源已加载到设备...")
-
-        # 限制输入文本长度
-        if len(input_text) > 100:
-            print(f"⚠️ 输入文本过长({len(input_text)}字符)，自动截断到100字符")
-            input_text = input_text[:100]
         
         with torch.inference_mode():
             print("▶️ 开始生成过程...")
@@ -251,20 +246,15 @@ class MegaTTS3DiTInfer():
             # language_type = classify_language(input_text)
             if language_type == 'en':
                 # input_text = self.en_normalizer.normalize(input_text)
-                text_segs = chunk_text_english(input_text, max_chars=60)  # 减小分段长度
+                text_segs = chunk_text_english(input_text, max_chars=130)  # 使用原始最大长度
                 print(f"▶️ 英文文本分段完成，共{len(text_segs)}段")
             else:
                 # input_text = self.zh_normalizer.normalize(input_text)
-                text_segs = chunk_text_chinese(input_text, limit=30)  # 减小分段长度
+                text_segs = chunk_text_chinese(input_text, limit=60)  # 使用原始最大长度
                 print(f"▶️ 中文文本分段完成，共{len(text_segs)}段")
 
-            # 限制段落数量
-            if len(text_segs) > 2:
-                print(f"⚠️ 文本段落数量过多({len(text_segs)})，限制为前2段")
-                text_segs = text_segs[:2]
-
             for seg_i, text in enumerate(text_segs):
-                print(f"▶️ 处理第{seg_i+1}/{len(text_segs)}段文本: '{text}'")
+                print(f"▶️ 处理第{seg_i+1}/{len(text_segs)}段文本 ({len(text)}字符)")
                 ''' G2P '''
                 print(f"  ▶️ 执行G2P(grapheme to phoneme)...")
                 ph_pred, tone_pred = g2p(self, text)
@@ -279,7 +269,7 @@ class MegaTTS3DiTInfer():
                 inputs = prepare_inputs_for_dit(self, mel2ph_ref, mel2ph_pred, ph_ref, tone_ref, ph_pred, tone_pred, vae_latent)
                 print(f"  ✅ DiT输入准备完成")
                 
-                # Speech dit inference
+                # 使用半精度加速DiT推理
                 print(f"  ▶️ 执行DiT推理，timesteps={time_step}...")
                 with torch.cuda.amp.autocast(dtype=self.precision, enabled=True):
                     x = self.dit.inference(inputs, timesteps=time_step, seq_cfg_w=[p_w, t_w]).float()
