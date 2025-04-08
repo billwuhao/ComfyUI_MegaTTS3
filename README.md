@@ -5,6 +5,8 @@
 High-quality voice cloning, supports Chinese and English, and can perform cross-lingual cloning.
 
 ![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/2025-04-06_13-52-57.png)
+![微信截图_20250408171024](https://github.com/user-attachments/assets/47f01ba1-cd9a-4510-b199-bc75ce2cc4bd)
+
 
 ## 📣 Updates
 
