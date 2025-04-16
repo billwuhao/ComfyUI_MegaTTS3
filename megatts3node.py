@@ -1,5 +1,6 @@
 import json
 import os
+import io
 import librosa
 import numpy as np
 import torch
@@ -305,6 +306,8 @@ class MegaTTS3DiTInfer():
             return {"waveform": waveform, "sample_rate": self.sr}
 
 
+# 我们只确保输出一个字符串，而让MegaTTS3Run接受所有类型
+
 class MegaTTS3Run:
     infer_ins_cache = None
     @classmethod
@@ -313,7 +316,7 @@ class MegaTTS3Run:
         default_speaker = speakers[0] if speakers else ""
         return {
             "required": {
-                "speaker":(speakers,{"default": default_speaker}),
+                "speaker": ("STRING", {"default": default_speaker}),  # 使用STRING类型接受任何字符串
                 "text": ("STRING",),
                 "text_language": (["en", "zh"], {"default": "zh"}),
                 "time_step": ("INT", {"default": 32, "min": 1,}),
@@ -329,13 +332,40 @@ class MegaTTS3Run:
     CATEGORY = "🎤MW/MW-MegaTTS3"
 
     def clone(self, speaker, text, text_language, time_step, p_w, t_w, unload_model):
-        sperker_path = os.path.join(model_path, "MegaTTS3", "speakers", speaker)
+        # 确保speaker是字符串类型
+        speaker = str(speaker)
+        
+        # 验证和处理speaker的值
+        available_speakers = get_speakers()
+        
+        # 检查是否是一个已知的speaker文件
+        if speaker in available_speakers:
+            speaker_name = speaker
+        else:
+            # 如果是.wav结尾的文件名，尝试直接使用
+            if speaker.endswith('.wav') and speaker in available_speakers:
+                speaker_name = speaker
+            else:
+                # 如果输入不是有效的speaker，使用默认的
+                print(f"警告: 未知音色 '{speaker}'，使用默认音色")
+                speaker_name = available_speakers[0] if available_speakers else ""
+                print(f"默认音色: {speaker_name}")
+        
+        # 构建音频文件路径
+        sperker_path = os.path.join(model_path, "MegaTTS3", "speakers", speaker_name)
+        print(f"使用音色文件: {sperker_path}")
+        
         if MegaTTS3Run.infer_ins_cache is not None:
             infer_ins = MegaTTS3Run.infer_ins_cache
         else:
             infer_ins = MegaTTS3Run.infer_ins_cache = MegaTTS3DiTInfer()
-        with open(sperker_path, 'rb') as file:
-            file_content = file.read()
+        
+        try:
+            with open(sperker_path, 'rb') as file:
+                file_content = file.read()
+        except Exception as e:
+            print(f"打开音色文件失败: {e}")
+            raise Exception(f"无法打开音色文件: {sperker_path} - {str(e)}")
 
         latent_file = sperker_path.replace('.wav', '.npy')
         print(f"latent_file: {latent_file}")
@@ -346,10 +376,11 @@ class MegaTTS3Run:
         else:
             raise Exception("latent_file not found")
         
-        # 降低生成步数以加快处理
+        # 使用用户设置的time_step值
+        print(f"[信息] 使用设置的time_step={time_step}")
+        # 提示用户较高的time_step值会增加处理时间但可能提升情感表达
         if time_step > 16:
-            print(f"[优化] 将time_step从{time_step}降低到16以加快处理")
-            time_step = 16
+            print(f"[提示] 较高的time_step值可能会增加处理时间，但有助于提升情感表达效果")
             
         print(f"开始生成音频... 参数: language={text_language}, time_step={time_step}, p_w={p_w}, t_w={t_w}")
         try:
@@ -390,12 +421,56 @@ class MultiLinePromptMG:
         return (multi_line_prompt.strip(),)
 
 
+
+
+class SpeakerPreviewMG:
+    @classmethod
+    def INPUT_TYPES(s):
+        speakers = get_speakers()
+        default_speaker = speakers[0] if speakers else ""
+        return {
+            "required": {
+                "speaker":(speakers,{"default": default_speaker}),
+            },
+        }
+
+    RETURN_TYPES = ("AUDIO", "STRING")
+    RETURN_NAMES = ("原音频", "speaker")
+    FUNCTION = "preview_speaker"
+    CATEGORY = "🎤MW/MW-MegaTTS3"
+
+    def preview_speaker(self, speaker):
+        # 获取音频文件路径
+        speaker_path = os.path.join(model_path, "MegaTTS3", "speakers", speaker)
+        
+        # 加载音频文件
+        if os.path.exists(speaker_path):
+            # 读取音频文件
+            with open(speaker_path, 'rb') as file:
+                audio_bytes = file.read()
+            
+            # 使用librosa加载音频
+            audio_data, sr = librosa.load(io.BytesIO(audio_bytes), sr=None, mono=True)
+            # 转换为ComfyUI可用的格式
+            waveform = torch.tensor(audio_data).unsqueeze(0).unsqueeze(0)
+            audio_output = {"waveform": waveform, "sample_rate": sr}
+            
+            print(f"已加载原始音色: {speaker}，采样率: {sr}Hz，长度: {len(audio_data)/sr:.2f}秒")
+            return (audio_output, speaker)
+        else:
+            print(f"错误: 找不到音频文件 {speaker_path}")
+            # 返回空音频和speaker名称
+            empty_waveform = torch.zeros(1, 1, 100)
+            return ({"waveform": empty_waveform, "sample_rate": 24000}, speaker)
+
 NODE_CLASS_MAPPINGS = {
     "MegaTTS3Run": MegaTTS3Run,
     "MultiLinePromptMG": MultiLinePromptMG,
+    "SpeakerPreviewMG": SpeakerPreviewMG,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "MegaTTS3Run": "Mega TTS3 Run",
     "MultiLinePromptMG": "Multi Line Prompt",
+    "SpeakerPreviewMG": "音色预览",
 }
