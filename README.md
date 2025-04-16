@@ -72,3 +72,4 @@ pip install -r requirements.txt
 ## 致谢
 
 - [MegaTTS3](https://github.com/bytedance/MegaTTS3)
+- [ComfyUI_MegaTTS3](https://github.com/billwuhao/ComfyUI_MegaTTS3)
