@@ -1,4 +1,4 @@
-[中文](README-CN.md) | [English](README.md)
+
 
 # MegaTTS3 语音克隆节点 (ComfyUI版)
 
