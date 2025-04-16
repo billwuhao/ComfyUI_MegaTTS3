@@ -1,0 +1,314 @@
+{
+  "last_node_id": 346,
+  "last_link_id": 264,
+  "nodes": [
+    {
+      "id": 327,
+      "type": "PreviewAudio",
+      "pos": [
+        624.3270874023438,
+        975.667724609375
+      ],
+      "size": [
+        315,
+        88
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "label": "音频",
+          "type": "AUDIO",
+          "link": 263
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewAudio",
+        "ttNbgOverride": {
+          "color": "#332922",
+          "bgcolor": "#593930",
+          "groupcolor": "#b06634"
+        }
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
+    },
+    {
+      "id": 330,
+      "type": "String Literal",
+      "pos": [
+        -197.60328674316406,
+        1021.3621826171875
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "label": "STRING",
+          "type": "STRING",
+          "links": [
+            264
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "String Literal",
+        "ttNbgOverride": {
+          "color": "#332922",
+          "bgcolor": "#593930",
+          "groupcolor": "#b06634"
+        }
+      },
+      "widgets_values": [
+        "我真的不知道，我害怕得不得了。在恐惧中，我忍不住反手给了她一刀！哈哈哈哈哈!你是知道的，我本来并没有打算杀了她。她那么可爱！我怎么会舍得下手呢?可是，她竟然想为你报仇！你说我能怎么办呢?我......只能让她永远闭嘴了。"
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
+    },
+    {
+      "id": 340,
+      "type": "Note",
+      "pos": [
+        -547.3311157226562,
+        1040.445068359375
+      ],
+      "size": [
+        210,
+        88
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "音色预览\nMega TTS3 Run"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 344,
+      "type": "PreviewAudio",
+      "pos": [
+        618.6187133789062,
+        814.5120849609375
+      ],
+      "size": [
+        315,
+        88
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "label": "音频",
+          "type": "AUDIO",
+          "link": 261
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewAudio",
+        "ttNbgOverride": {
+          "color": "#332922",
+          "bgcolor": "#593930",
+          "groupcolor": "#b06634"
+        }
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
+    },
+    {
+      "id": 345,
+      "type": "SpeakerPreviewMG",
+      "pos": [
+        256.2424621582031,
+        818.449462890625
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "原音频",
+          "label": "原音频",
+          "type": "AUDIO",
+          "links": [
+            261
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "speaker",
+          "label": "speaker",
+          "type": "STRING",
+          "links": [
+            262
+          ],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SpeakerPreviewMG",
+        "ttNbgOverride": {
+          "color": "#332922",
+          "bgcolor": "#593930",
+          "groupcolor": "#b06634"
+        }
+      },
+      "widgets_values": [
+        "001.asdfedzy.wav"
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
+    },
+    {
+      "id": 346,
+      "type": "MegaTTS3Run",
+      "pos": [
+        248.81735229492188,
+        973.2371215820312
+      ],
+      "size": [
+        315,
+        222
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "speaker",
+          "type": "STRING",
+          "pos": [
+            10,
+            36
+          ],
+          "widget": {
+            "name": "speaker"
+          },
+          "link": 262
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "pos": [
+            10,
+            60
+          ],
+          "widget": {
+            "name": "text"
+          },
+          "link": 264
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "label": "audio",
+          "type": "AUDIO",
+          "links": [
+            263
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MegaTTS3Run",
+        "ttNbgOverride": {
+          "color": "#332922",
+          "bgcolor": "#593930",
+          "groupcolor": "#b06634"
+        }
+      },
+      "widgets_values": [
+        "001.asdfedzy.wav",
+        "",
+        "zh",
+        32,
+        1.6,
+        2.5,
+        false
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
+    }
+  ],
+  "links": [
+    [
+      261,
+      345,
+      0,
+      344,
+      0,
+      "AUDIO"
+    ],
+    [
+      262,
+      345,
+      1,
+      346,
+      0,
+      "STRING"
+    ],
+    [
+      263,
+      346,
+      0,
+      327,
+      0,
+      "AUDIO"
+    ],
+    [
+      264,
+      330,
+      0,
+      346,
+      1,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1.2839025177495016,
+      "offset": [
+        387.1685405583211,
+        -580.8744434607081
+      ]
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
