@@ -2,10 +2,16 @@
 
 # MegaTTS3 语音克隆节点 (ComfyUI版)
 
-高质量语音克隆，支持中文和英文，可以进行跨语言克隆。
+高质量语音克隆，支持中文和英文，相似度非常高非常好玩。
 ![微信截图_20250416194242](https://github.com/user-attachments/assets/25341a4f-a300-4318-953e-f45d8d3fe150)
 ![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/2025-04-06_13-52-57.png)
 ![微信截图_20250408171024](https://github.com/user-attachments/assets/47f01ba1-cd9a-4510-b199-bc75ce2cc4bd)
+
+## 📣 音色模型相关说明
+
+音色模型委托官方训练：https://drive.google.com/drive/folders/1gCWL1y_2xu9nIFhUX_OW5MbcFuB7J5Cl
+音色模型下载：https://drive.google.com/drive/folders/1QhcHWcy20JfqWjgqZX1YM3I6i9u4oNlr
+格式要求： 所有音频必须是.wav格式且时长小于24秒，文件名中不能包含空格。
 
 
 ## 📣 更新日志
@@ -35,7 +41,7 @@ pip install -r requirements.txt
 
 从 [MegaTTS3](https://huggingface.co/ByteDance/MegaTTS3/tree/main) 下载整个文件夹并放置到 `TTS` 文件夹中。
 
-在 `MegaTTS3` 文件夹内创建新的 `speakers` 文件夹。从 [Google drive](https://drive.google.com/drive/folders/1QhcHWcy20JfqWjgqZX1YM3I6i9u4oNlr) 下载所有 `.wav` 和 `.npy` 文件，并放置到 `speakers` 文件夹中。
+在 `MegaTTS3` 文件夹内创建新的 `speakers` 文件夹。从 [Google drive](https://drive.google.com/drive/folders/1QhcHWcy20JfqWjgqZX1YM3I6i9u4oNlr) 下载所有 `.wav` 和 `.npy` 文件，并放置到 `ComfyUI\models\TTS\speakers` 文件夹中。
 
 ![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/2025-04-06_14-49-12.png)
 
