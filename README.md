@@ -3,7 +3,7 @@
 # MegaTTS3 语音克隆节点 (ComfyUI版)
 
 高质量语音克隆，支持中文和英文，可以进行跨语言克隆。
-
+![微信截图_20250416194242](https://github.com/user-attachments/assets/25341a4f-a300-4318-953e-f45d8d3fe150)
 ![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/2025-04-06_13-52-57.png)
 ![微信截图_20250408171024](https://github.com/user-attachments/assets/47f01ba1-cd9a-4510-b199-bc75ce2cc4bd)
 
