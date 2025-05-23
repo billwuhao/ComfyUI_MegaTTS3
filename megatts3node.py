@@ -437,9 +437,9 @@ class MegaTTS3SpeakersPreview:
         }
         return (wav_path, output_audio,)
 
+INFER_INS_CACHE = None
 class MegaTTS3Run:
     def __init__(self):
-        self.infer_ins_cache = None
         self.speakers_dir = os.path.join(model_path, "MegaTTS3", "speakers")
         self.resource_context = None
         self.speaker = None
@@ -463,8 +463,9 @@ class MegaTTS3Run:
     CATEGORY = "🎤MW/MW-MegaTTS3"
 
     def clone(self, speaker, text, text_language, time_step, p_w, t_w, unload_model):
-        if self.infer_ins_cache is None:
-            self.infer_ins_cache = MegaTTS3DiTInfer()
+        global INFER_INS_CACHE
+        if INFER_INS_CACHE is None:
+            INFER_INS_CACHE = MegaTTS3DiTInfer()
 
         latent_file = speaker.replace('.wav', '.npy')
 
@@ -475,18 +476,18 @@ class MegaTTS3Run:
                 self.speaker = speaker
                 with open(self.speaker, 'rb') as file:
                     file_content = file.read()
-                resource_context = self.infer_ins_cache.preprocess(file_content, latent_file=latent_file)
+                resource_context = INFER_INS_CACHE.preprocess(file_content, latent_file=latent_file)
                 self.resource_context = resource_context
             else:
                 resource_context = self.resource_context
         else:
             raise Exception(f"{latent_file}: latent_file not found")
-        audio_data = self.infer_ins_cache.forward(resource_context, text, language_type=text_language, time_step=time_step, p_w=p_w, t_w=t_w)
+        audio_data = INFER_INS_CACHE.forward(resource_context, text, language_type=text_language, time_step=time_step, p_w=p_w, t_w=t_w)
 
         if unload_model:
             import gc
-            self.infer_ins_cache.clean()
-            self.infer_ins_cache = None
+            INFER_INS_CACHE.clean()
+            INFER_INS_CACHE = None
             self.speaker = None
             self.resource_context = None
             gc.collect()
