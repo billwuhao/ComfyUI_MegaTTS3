@@ -118,11 +118,11 @@ def dur_pred(self, ctx_dur_tokens, incremental_state_dur_prompt, ph_pred, tone_p
     # if seg_i > 0:
         # dur_pred[:, 0] = 0
     # ['。', '！', '？', 'sil']
-    for sil_token in [148, 153, 166, 145]:
-        dur_pred[ph_pred==sil_token].clamp_min(32)
-    # ['，', '；'] 
-    for sil_token in [163, 165]:
-        dur_pred[ph_pred==sil_token].clamp_min(16)
+    # for sil_token in [148, 153, 166, 145]:
+    #     dur_pred[ph_pred==sil_token].clamp_min(32)
+    # # ['，', '；'] 
+    # for sil_token in [163, 165]:
+    #     dur_pred[ph_pred==sil_token].clamp_min(16)
     if not is_final:
         # add 0.32ms for crossfade
         dur_pred[:, -1] =  dur_pred[:, -1] + 32
@@ -135,6 +135,12 @@ def dur_pred(self, ctx_dur_tokens, incremental_state_dur_prompt, ph_pred, tone_p
     dur_pred = dur_pred * dur_disturb_r * dur_disturb_choice + \
             dur_pred / dur_disturb_r * (1 - dur_disturb_choice)
     dur_pred = torch.round(dur_pred * dur_alpha).clamp(0, 127)
+    # ['。', '！', '？', 'sil']
+    for sil_token in [148, 153, 166, 145]:
+        dur_pred[ph_pred==sil_token] = dur_pred[ph_pred==sil_token].clamp_min(64)
+    # ['，', '；'] 
+    for sil_token in [163, 165]:
+        dur_pred[ph_pred==sil_token] = dur_pred[ph_pred==sil_token].clamp_min(32)
     if is_first:
         dur_pred[:, 0] = 8
     

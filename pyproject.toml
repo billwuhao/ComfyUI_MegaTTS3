@@ -1,7 +1,7 @@
 [project]
 name = "megatts3-mw"
 description = "Lightweight and Efficient, 🎧Ultra High-Quality Voice Cloning, Chinese and English."
-version = "1.0.5"
+version = "2.0.0"
 license = {file = "LICENSE"}
 dependencies = ["setproctitle", "attrdict", "librosa", "pydub", "pyloudnorm", "x-transformers", "torchdiffeq", "openai-whisper>=20240930"]
 

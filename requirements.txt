@@ -1,8 +1,10 @@
 setproctitle
 attrdict
 librosa
-pydub
 pyloudnorm
 x-transformers
 torchdiffeq
 openai-whisper>=20240930
+langdetect
+pynini==2.1.6; platform_system!="Windows"
+WeTextProcessing>=1.0.3; platform_system!="Windows"
