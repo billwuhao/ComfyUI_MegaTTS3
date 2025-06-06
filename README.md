@@ -16,6 +16,7 @@ High-quality voice cloning, supporting both Chinese and English, with cross-ling
 [S1] 2002年的第一场雪，下在了2003年
 ```
 
+https://github.com/user-attachments/assets/b734e6bd-9303-4311-b3a4-618241ca6535
 
 [2025-04-28]⚒️: Added a voice preview node. Preview the voice first, then clone if you're satisfied. Thanks to @chenpipi0807 for the idea😍. You can create categorized subfolders within the `speakers` folder.
 
