@@ -16,6 +16,8 @@
 [S1] 2002年的第一场雪，下在了2003年
 ```
 
+https://github.com/user-attachments/assets/b734e6bd-9303-4311-b3a4-618241ca6535
+
 [2025-04-28]⚒️: 新增预览音色节点, 先预览音色, 满意再进行克隆. 感谢 @chenpipi0807 的 idea😍. 可在 `speakers` 文件夹下分门别类建更多文件夹.
 
 [2025-04-06]⚒️: 发布 v1.0.0.
@@ -62,7 +64,7 @@ pip install -r requirements.txt
 
 - **VAE 编码模型, 加微信公众号获取, 放到 `TTS\MegaTTS3\wavvae` 文件夹下, 即可自定义音色而无需 `.npy` 文件**:
 
-![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp)
+<img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp" alt="" width="200" height="200">
 
 - 请将音频放到 `TTS\speakers` 目录下. 我将会把所有 TTS 节点的说话者音频全部统一放到 `ComfyUI\models\TTS\speakers` 路径下, 这些节点包括 `IndexTTS, CSM, Dia, KokoroTTS, MegaTTS, QuteTTS, SparkTTS, StepAudioTTS` 等.
 
@@ -113,4 +115,4 @@ pip install -r requirements.txt
 
 您的赞赏是我最大的动力! 感谢您支持我一杯咖啡!
 
-![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/20250607012102.jpg)
+<img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/20250607012102.jpg" alt="" width="200" height="200">

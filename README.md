@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 - **For the VAE encoder model, which enables custom voice cloning without `.npy` files, please follow our WeChat Official Account to obtain it. Place it in the `TTS\MegaTTS3\wavvae` folder**:
 
-![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp)
+<img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp" alt="" width="200" height="200">
 
 - Please place the audio in the `TTS\speakers` directory. I will unify all speaker audios for TTS nodes into the `ComfyUI\models\TTS\speakers` path. These nodes include `IndexTTS, CSM, Dia, KokoroTTS, MegaTTS, QuteTTS, SparkTTS, StepAudioTTS`, etc.
 
@@ -116,4 +116,4 @@ The structure is as follows:
 
 Your appreciation is my greatest motivation! Thank you for supporting me with a cup of coffee!
 
-![image](https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/20250607012102.jpg)
+<img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/20250607012102.jpg" alt="" width="200" height="200">
