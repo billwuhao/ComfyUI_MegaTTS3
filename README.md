@@ -66,6 +66,8 @@ pip install -r requirements.txt
 
 <img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp" alt="" width="200" height="200">
 
+  - [Google Cloud Drive](https://drive.google.com/drive/folders/1p9GNdNJqeK_94lIJW8lew_G3EazU-9Wx?usp=sharing)
+
 - Please place the audio in the `TTS\speakers` directory. I will unify all speaker audios for TTS nodes into the `ComfyUI\models\TTS\speakers` path. These nodes include `IndexTTS, CSM, Dia, KokoroTTS, MegaTTS, QuteTTS, SparkTTS, StepAudioTTS`, etc.
 
 The structure is as follows:

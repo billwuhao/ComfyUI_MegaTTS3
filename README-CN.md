@@ -66,6 +66,8 @@ pip install -r requirements.txt
 
 <img src="https://github.com/billwuhao/ComfyUI_MegaTTS3/blob/main/images/gzh.webp" alt="" width="200" height="200">
 
+  - [Google 云盘](https://drive.google.com/drive/folders/1p9GNdNJqeK_94lIJW8lew_G3EazU-9Wx?usp=sharing)
+
 - 请将音频放到 `TTS\speakers` 目录下. 我将会把所有 TTS 节点的说话者音频全部统一放到 `ComfyUI\models\TTS\speakers` 路径下, 这些节点包括 `IndexTTS, CSM, Dia, KokoroTTS, MegaTTS, QuteTTS, SparkTTS, StepAudioTTS` 等.
 
 结构如下:
